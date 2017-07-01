@@ -3,6 +3,7 @@
 import json
 import praw
 
+
 with open('config.json', 'r') as config:
     config = json.load(config)
     reddit = praw.Reddit(
@@ -12,9 +13,10 @@ with open('config.json', 'r') as config:
     )
 
 
-def get_sub_count(subreddit_name: str) -> int:
+def get_sub(subreddit_name: str) -> praw.models.Subreddit:
     """
-    Retrieves the Subreddit count for the specified Subreddit.
+    Retrieves a `praw.Subreddit` object
+    from the given Subreddit Name.
     """
 
-    return reddit.subreddit(subreddit_name).subscribers
+    return reddit.subreddit(subreddit_name)
