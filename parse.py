@@ -10,7 +10,6 @@ def handle_extract(args: argparse.Namespace):
     Handles input given to the `extractor` Command.
     """
 
-
     if args.include_r:
         result = [
             ''.join(
@@ -55,7 +54,7 @@ def add_extractor(subparsers: argparse.ArgumentParser):
     extractor.add_argument(
         '-i', '--indent',
         help=('The amount of spaces to use for '
-              'indenting the Array. Defaults to 4.');
+              'indenting the Array. Defaults to 4.'),
         type=int,
         default=4,
     )
