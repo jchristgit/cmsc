@@ -1,15 +1,17 @@
 """Creates various parsers and subparsers for the CLI."""
 
 import argparse
-import os
+import sys
+import json
 
 
-def extractor(args: argparse.Namespace):
+def handle_extract(args: argparse.Namespace):
     """
     Handles input given to the `extractor` Command.
     """
 
-    if args.include_r >= 0:
+
+    if args.include_r:
         result = [
             ''.join(
                 c for c in l if c.isalpha()
@@ -21,8 +23,11 @@ def extractor(args: argparse.Namespace):
                 c for c in l if c.isalpha()
             ).lstrip('/r/') for l in args.infile if 'Rank' not in l
         ]
-    return json.dumps(sorted(result), indent=args.indent)
-        
+    print(result)
+    args.outfile.write(json.dumps(sorted(result), indent=args.indent))
+    args.outfile.write('\n')
+    args.outfile.close()
+
 
 def add_extractor(subparsers: argparse.ArgumentParser):
     """
@@ -44,14 +49,13 @@ def add_extractor(subparsers: argparse.ArgumentParser):
     extractor.add_argument(
         '-o', '--outfile',
         help='The file to write results to.',
-        type=argparse.FileType(mode='r')
+        type=argparse.FileType(mode='r'),
+        default=sys.stdout
     )
     extractor.add_argument(
         '-i', '--indent',
         help=('The amount of spaces to use for '
-              'indenting the Array. Defaults to 4. '
-              'To disable the formatting altogether, '
-              'use any negative integer.'),
+              'indenting the Array. Defaults to 4.');
         type=int,
         default=4,
     )
@@ -60,5 +64,9 @@ def add_extractor(subparsers: argparse.ArgumentParser):
         help=('Whether to include the /r/ prepending '
               'the Subreddit names or not. Defaults to '
               'not including them.'),
-        action='count'
+        type=bool,
+        default=False
     )
+    extractor.set_defaults(func=handle_extract)
+
+
