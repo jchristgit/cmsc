@@ -15,6 +15,7 @@ def get_args() -> argparse.Namespace:
         title='Main Functions'
     )
     parse.add_extractor(subparsers)
+    parse.add_builder(subparsers)
 
     args = parser.parse_args()
     args.func(args)
