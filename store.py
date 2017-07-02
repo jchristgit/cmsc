@@ -22,15 +22,16 @@ def store(sub_count_data: dict):
             "YasuoMains": 7000,
             ...
         }
-
-    Note the case-sensitivity. This is important to display the
-    correct images when a table is generated for /r/ChampionMains.
     """
 
     file_name = os.path.join(STORE_DIR, str(datetime.date.today()))
 
     with open(file_name + '.json', 'w+') as outfile:
-        json.dump(sub_count_data, outfile, sort_keys=True, indent=4)
+        json.dump(
+            sub_count_data,
+            outfile,
+            indent=4
+        )
 
 
 def newest() -> Optional[Tuple[datetime.date, dict]]:
@@ -50,7 +51,7 @@ def newest() -> Optional[Tuple[datetime.date, dict]]:
         return None
 
     latest = max(dir_contents)
-    date_arr = [int(num) for num in latest.split('-')]
+    date_arr = [int(num) for num in latest.rstrip('.json').split('-')]
     modification_date = datetime.date(
         year=date_arr[0],
         month=date_arr[1],
