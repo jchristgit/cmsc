@@ -4,7 +4,9 @@ import argparse
 import sys
 import json
 
+import store
 import table_builder
+from client import reddit
 
 
 def handle_extract(args: argparse.Namespace):
@@ -130,6 +132,56 @@ def add_builder(subparsers: argparse.ArgumentParser):
         action='count',
         default=0
     )
-    
+
     builder.set_defaults(func=handle_build)
 
+
+def handle_post(args: argparse.Namespace):
+    """
+    Handles the invocation of the `post` command.
+    Posts subscriber counts on a selected subreddit.
+    """
+
+    table = table_builder.get_table(args.nocomp > 0)
+    subreddit = reddit.subreddit(args.subreddit)
+    last_count = store.newest()
+    post_text = ("Hey, I'm a bot! Should there be any issue with this, "
+                 f"contact /u/Volcyy.\n\n{table}")
+    if last_count is not None:
+        last_update = last_count[0]
+        post_text += f"\n\nThe last count was retrieved on {last_update}."
+
+    subreddit.submit("Monthly sub count statistics", selftext=post_text, send_replies=False)
+    print('Posted table on {}'.format(args.subreddit))
+
+
+def add_poster(subparsers: argparse.ArgumentParser):
+    """
+    Adds the `post` command to the parser,
+    used to post the most recent stats on
+    a selected subreddit.
+    """
+
+    poster = subparsers.add_parser(
+        'post',
+        help='Generate and post a table on a selected subreddit.'
+    )
+
+    poster.add_argument(
+        'subreddit',
+        help="The subreddit to post the table on"
+    )
+
+    poster.add_argument(
+        '-nc', '--nocomp',
+        help=('If this flag is given, then the '
+              'application will not attempt to compare '
+              'the results of the subscriber counting '
+              'to the results of previous months (and '
+              'thus, not display any differences '
+              'between them in the output'),
+        action='count',
+        default=0
+    )
+
+    poster.set_defaults(func=handle_post)

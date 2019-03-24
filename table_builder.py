@@ -25,7 +25,7 @@ def get_sub_info() -> dict:
     module.
     """
 
-    with open('config.json') as config:
+    with open('config/config.json') as config:
         subreddits = json.load(config)['subreddits']
     result = {}
     for sub in subreddits:
@@ -51,7 +51,7 @@ def get_table(no_comp=False) -> str:
 
     result = []
     newest = store.newest()
-    print('Getting Subreddit information, this may take a moment... ', end='')
+    print('Getting Subreddit information, this may take a moment... ', end='', flush=True)
     sub_info = sorted(get_sub_info().items(), reverse=True, key=lambda s: s[1])
     print('done.')
 
@@ -62,6 +62,7 @@ def get_table(no_comp=False) -> str:
             print('Found no data from previous runs.')
 
         result.append('Rank | Name | Subscribers')
+        result.append('---|---|---')
         for idx, sub in enumerate(sub_info):
             result.append(
                 f'{idx + 1} | /r/{sub[0]} | {sub[1]:,}'
@@ -69,12 +70,34 @@ def get_table(no_comp=False) -> str:
 
     else:
         print(f'Found existing file from {newest[0]}, comparing to it\n')
+        with open('config/config.json') as config:
+            subreddits = json.load(config)['subreddits']
 
-        result.append('Rank | Name | Subscribers | Difference')
+        last_month_sorted = sorted(
+            (
+                (sub_name, subscribers)
+                for sub_name, subscribers
+                in newest[1].items()
+            ),
+            key=lambda sub_tuple: sub_tuple[1],
+            reverse=True
+        )
+
+        result.append('Rank | Name | Subscribers | Subscriber difference | Rank difference | Discord invite')
+        result.append('---|---|---|---|---|--')
         for idx, sub in enumerate(sub_info):
-            difference = sub[1] - newest[1].get(sub[0], 0)
+            sub_difference = sub[1] - newest[1].get(sub[0], 0)
+
+            rank_last_month = 0
+            for name, _ in last_month_sorted:
+                rank_last_month += 1
+                if name == sub[0]:
+                    break
+
+            rank_difference = -(idx + 1 - rank_last_month)
+            links = ' '.join(f'https://{link}' for link in subreddits[sub[0]].split())
             result.append(
-                f'{idx + 1} | /r/{sub[0]} | {sub[1]:,} | {difference:+}'
+                f'{idx + 1} | /r/{sub[0]} | {sub[1]:,} | {sub_difference:+} | {rank_difference:+} | {links}'
             )
 
     return '  \n'.join(result)
