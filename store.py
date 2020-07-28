@@ -2,11 +2,16 @@
 
 import datetime
 import os
-from typing import Optional, Tuple
 import json
+from typing import Optional, Tuple
 
-os.makedirs('store', exist_ok=True)
-STORE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'store')
+from client import config
+
+if 'store_directory' in config:
+    STORE_DIR = config['store_directory']
+else:
+    os.makedirs('store', exist_ok=True)
+    STORE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'store')
 
 
 def store(sub_count_data: dict):

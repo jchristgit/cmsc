@@ -1,11 +1,15 @@
 """Handles interacting with Reddit's API using PRAW."""
 
+import os
 import json
+
 import praw
 
 
-with open('config/config.json', 'r') as config:
-    config = json.load(config)
+config_path = os.getenv('CONFIG_FILE', 'config/config.json')
+
+with open(config_path, 'r') as f:
+    config = json.load(f)
     reddit = praw.Reddit(
         username=config['reddit']['username'],
         password=config['reddit']['password'],

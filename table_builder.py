@@ -25,8 +25,7 @@ def get_sub_info() -> dict:
     module.
     """
 
-    with open('config/config.json') as config:
-        subreddits = json.load(config)['subreddits']
+    subreddits = client.config['subreddits']
     result = {}
     for sub in subreddits:
         sub_info = client.get_sub(sub)
@@ -70,8 +69,7 @@ def get_table(no_comp=False) -> str:
 
     else:
         print(f'Found existing file from {newest[0]}, comparing to it\n')
-        with open('config/config.json') as config:
-            subreddits = json.load(config)['subreddits']
+        subreddits = client.config['subreddits']
 
         last_month_sorted = sorted(
             (
