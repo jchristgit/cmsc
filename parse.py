@@ -146,7 +146,7 @@ def handle_post(args: argparse.Namespace):
     subreddit = reddit.subreddit(args.subreddit)
     last_count = store.newest()
     post_text = ("Hey, I'm a bot! Should there be any issue with this, "
-                 f"contact /u/Volcyy.\n\n{table}")
+                 f"contact Volcyy#2359 on Discord.\n\n{table}")
     if last_count is not None:
         last_update = last_count[0]
         post_text += f"\n\nThe last count was retrieved on {last_update}."
