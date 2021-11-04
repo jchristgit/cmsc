@@ -1,4 +1,4 @@
-# Champion Mains Subscription Counter
+# Champion Mains Subscriber Counter
 
 ### Installation
 
@@ -58,3 +58,8 @@ output:
                         have a place to report issues to. Not passing this flag will not add any hint as to whom to contact.
                         [$CONTACT]
 ```
+
+### Naming
+
+This project was born for the subreddit subscriber counting done for the
+"Champion Mains" community on Reddit, but can be used anywhere.
