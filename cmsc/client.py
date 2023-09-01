@@ -1,11 +1,16 @@
 """Reddit client."""
 
 import datetime
+import logging
 from typing import Dict, Tuple, Optional, List
 
 import praw
+import prawcore.exceptions
 
 from .persistence import SubredditCounts, SubredditCountDifferences
+
+
+log = logging.getLogger(__name__)
 
 
 def load_subscriber_counts(
@@ -15,7 +20,13 @@ def load_subscriber_counts(
     counts = {}
     for name in subreddits:
         subreddit = reddit.subreddit(name)
-        counts[subreddit.display_name] = subreddit.subscribers
+        try:
+            counts[subreddit.display_name] = subreddit.subscribers
+        except prawcore.exceptions.NotFound:
+            log.warning(
+                "Skipping fetching subscribers for subreddit %r (not found)",
+                name,
+            )
     return counts
 
 
