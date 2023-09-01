@@ -23,10 +23,9 @@ def load_subscriber_counts(
         try:
             counts[subreddit.display_name] = subreddit.subscribers
         except prawcore.exceptions.NotFound:
-            log.warning(
-                "Skipping fetching subscribers for subreddit %r (not found)",
-                name,
-            )
+            log.warning("Not fetching subscribers for subreddit %r (not found)", name)
+        except prawcore.exceptions.Forbidden:
+            log.warning("Not fetching subscribers for subreddit %r (forbidden)", name)
     return counts
 
 
